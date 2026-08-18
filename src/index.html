@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>College Countdown</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <span class="header-logo">&#127891;</span>
+        <span class="header-title">College Countdown.</span>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-tab active" data-tab="countdown">Your Timeline</button>
+        <button class="nav-tab" data-tab="events">Events</button>
+        <button class="nav-tab" data-tab="tracker">Tracker</button>
+        <button class="nav-tab" data-tab="stats">Statistics</button>
+      </nav>
+      <div class="header-right">
+        <button class="icon-btn" id="btn-settings-open" title="Settings">&#9881;</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ====== COUNTDOWN TAB ====== -->
+      <section id="tab-countdown" class="tab-panel active">
+        <p class="hero-subtitle" id="hero-subtitle">
+          Every day is one closer to the finish line. The hourglass below shows <strong>your semester</strong>.
+          Make every grain count.
+        </p>
+
+        <!-- Hourglass -->
+        <div class="hourglass-scene" id="hourglass-scene">
+          <canvas id="hourglass-canvas" width="280" height="340"></canvas>
+        </div>
+        <p class="hourglass-caption">&#128072; TAP THE HOURGLASS TO LOOK INSIDE</p>
+
+        <!-- Countdown -->
+        <p class="countdown-label">TIME REMAINING</p>
+        <div class="countdown-display">
+          <span class="cd-years" id="cd-days"><span class="cd-num">0</span><span class="cd-unit">days</span></span>
+          <span class="cd-hours" id="cd-hours"><span class="cd-num">0</span><span class="cd-unit">hrs</span></span>
+          <span class="cd-minutes" id="cd-minutes"><span class="cd-num">00</span><span class="cd-unit">min</span></span>
+          <span class="cd-seconds" id="cd-seconds"><span class="cd-num">00</span><span class="cd-unit">sec</span></span>
+        </div>
+        <p class="total-left"><span class="gold" id="total-hours-left">0</span> hours of college life left</p>
+        <p class="deadline-text" id="deadline-text">Deadline: Not set</p>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-label">DAYS PASSED</span>
+            <span class="stat-big" id="stat-days-passed">0</span>
+            <span class="stat-sub" id="stat-days-passed-sub">of your semester</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">DAYS LEFT</span>
+            <span class="stat-big green" id="stat-days-left">0</span>
+            <span class="stat-sub" id="stat-days-left-sub">days remaining</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">EVENTS SOON</span>
+            <span class="stat-big orange" id="stat-events-count">0</span>
+            <span class="stat-sub">upcoming</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">COMPLETED</span>
+            <span class="stat-big" id="stat-percent">0%</span>
+            <span class="stat-sub">of semester</span>
+          </div>
+        </div>
+
+        <!-- Upcoming -->
+        <div class="upcoming-section" id="upcoming-section">
+          <p class="section-title">&#128197; Upcoming Events</p>
+          <div class="upcoming-list" id="upcoming-list"></div>
+        </div>
+      </section>
+
+      <!-- ====== EVENTS TAB ====== -->
+      <section id="tab-events" class="tab-panel">
+        <div class="events-top">
+          <div>
+            <p class="section-title">&#9998; Manage your events</p>
+            <p class="section-sub">Track exams, assignments, and important dates.</p>
+          </div>
+          <button class="btn-green" id="btn-add-event">+ Add Event</button>
+        </div>
+        <div class="events-list" id="events-list"></div>
+
+        <!-- Event Modal -->
+        <div class="modal hidden" id="event-modal">
+          <div class="modal-backdrop" id="modal-backdrop"></div>
+          <div class="modal-content">
+            <p class="modal-eyebrow" id="modal-eyebrow">NEW EVENT</p>
+            <h3 class="modal-title" id="modal-title">What's happening?</h3>
+            <form id="event-form">
+              <input type="hidden" id="event-id">
+              <div class="form-field">
+                <label for="event-name">Event Name</label>
+                <input type="text" id="event-name" required placeholder="e.g. Final Exam">
+              </div>
+              <div class="form-field">
+                <label for="event-date">Date</label>
+                <input type="date" id="event-date" required>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="event-type">Type</label>
+                  <select id="event-type">
+                    <option value="exam">Exam</option>
+                    <option value="assignment">Assignment</option>
+                    <option value="holiday">Holiday</option>
+                    <option value="project">Project</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="event-color">Color</label>
+                  <input type="color" id="event-color" value="#e74c3c">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn-ghost" id="btn-cancel-event">Cancel</button>
+                <button type="submit" class="btn-green">Save Event</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====== TRACKER TAB ====== -->
+      <section id="tab-tracker" class="tab-panel">
+        <div class="tracker-header">
+          <div>
+            <p class="section-title">&#128293; Habit Tracker</p>
+            <p class="section-sub">Click any cell to log your habits for that day.</p>
+          </div>
+          <button class="btn-green" id="btn-add-habit">+ Add Habit</button>
+        </div>
+
+        <div class="tracker-key" id="tracker-key"></div>
+
+        <div class="heatmap-wrapper">
+          <div class="heatmap-months" id="heatmap-months"></div>
+          <div class="heatmap-body">
+            <div class="heatmap-days">
+              <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+            </div>
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+          </div>
+          <div class="heatmap-legend">
+            <span class="legend-text">Less</span>
+            <div class="legend-cell" style="background:var(--heatmap-empty)"></div>
+            <div class="legend-cell" style="background:#0e3d22"></div>
+            <div class="legend-cell" style="background:#1a5c35"></div>
+            <div class="legend-cell" style="background:#267d42"></div>
+            <div class="legend-cell" style="background:#39d353"></div>
+            <span class="legend-text">More</span>
+          </div>
+        </div>
+
+        <div class="tracker-stats">
+          <div class="tracker-stat">
+            <span class="tracker-stat-icon">&#128293;</span>
+            <span class="tracker-stat-value" id="tracker-streak">0</span>
+            <span class="tracker-stat-label">day streak</span>
+          </div>
+          <div class="tracker-stat">
+            <span class="tracker-stat-icon">&#128200;</span>
+            <span class="tracker-stat-value" id="tracker-month">0/0</span>
+            <span class="tracker-stat-label">this month</span>
+          </div>
+          <div class="tracker-stat">
+            <span class="tracker-stat-icon">&#127942;</span>
+            <span class="tracker-stat-value" id="tracker-best">0</span>
+            <span class="tracker-stat-label">best streak</span>
+          </div>
+        </div>
+
+        <!-- Habit Modal -->
+        <div class="modal hidden" id="habit-modal">
+          <div class="modal-backdrop" id="habit-modal-backdrop"></div>
+          <div class="modal-content">
+            <p class="modal-eyebrow">HABIT</p>
+            <h3 class="modal-title" id="habit-modal-title">Add Habit</h3>
+            <form id="habit-form">
+              <div class="form-field">
+                <label for="habit-name">Habit Name</label>
+                <input type="text" id="habit-name" required placeholder="e.g. Exercise">
+              </div>
+              <div class="form-field">
+                <label for="habit-color">Color</label>
+                <input type="color" id="habit-color" value="#39d353">
+              </div>
+              <div class="form-actions">
+                <button type="button" class="btn-red" id="btn-delete-habit" style="display:none;margin-right:auto">Delete</button>
+                <button type="button" class="btn-ghost" id="btn-cancel-habit">Cancel</button>
+                <button type="submit" class="btn-green">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Cell Popup -->
+        <div class="cell-popup-backdrop" id="cell-popup-backdrop"></div>
+        <div class="cell-popup" id="cell-popup">
+          <p class="cell-popup-date" id="cell-popup-date"></p>
+          <div class="cell-popup-checkboxes" id="cell-habit-checkboxes"></div>
+          <div class="form-actions">
+            <button class="btn-green" id="btn-save-cell">Save</button>
+          </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div class="heatmap-tooltip" id="heatmap-tooltip"></div>
+      </section>
+
+      <!-- ====== STATS TAB ====== -->
+      <section id="tab-stats" class="tab-panel">
+        <p class="section-title">&#128200; Semester Statistics</p>
+        <div class="stats-grid">
+          <div class="stat-card-lg">
+            <span class="stat-label">DAYS PASSED</span>
+            <span class="stat-big" id="stat-days-passed-2">0</span>
+            <span class="stat-sub">days into semester</span>
+          </div>
+          <div class="stat-card-lg">
+            <span class="stat-label">DAYS LEFT</span>
+            <span class="stat-big green" id="stat-days-left-2">0</span>
+            <span class="stat-sub">days remaining</span>
+          </div>
+          <div class="stat-card-lg">
+            <span class="stat-label">PERCENTAGE</span>
+            <span class="stat-big orange" id="stat-percent-2">0%</span>
+            <span class="stat-sub">semester complete</span>
+          </div>
+          <div class="stat-card-lg">
+            <span class="stat-label">TOTAL DAYS</span>
+            <span class="stat-big" id="stat-total-days-2">0</span>
+            <span class="stat-sub">in your semester</span>
+          </div>
+        </div>
+
+        <!-- GPA -->
+        <div class="gpa-section">
+          <p class="section-title">&#127891; GPA Tracker</p>
+          <div class="gpa-table" id="gpa-inputs">
+            <div class="gpa-row gpa-header">
+              <span>Course</span><span>Grade</span><span>Credits</span><span></span>
+            </div>
+            <div class="gpa-row">
+              <input type="text" placeholder="Course name" class="gpa-course">
+              <input type="number" min="0" max="4" step="0.1" placeholder="0.0" class="gpa-grade">
+              <input type="number" min="1" max="6" placeholder="3" class="gpa-credits">
+              <button class="btn-remove" type="button">&times;</button>
+            </div>
+          </div>
+          <div class="gpa-footer">
+            <button class="btn-ghost" id="btn-add-course">+ Add Course</button>
+            <div class="gpa-result">
+              CGPA: <span class="stat-big green" id="gpa-value">0.00</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====== SETTINGS PANEL (outside main to avoid overflow clipping) ====== -->
+    <div class="settings-overlay hidden" id="settings-panel">
+      <div class="settings-backdrop" id="settings-backdrop"></div>
+      <div class="settings-card">
+        <div class="settings-header">
+          <h3>&#9881; Settings</h3>
+          <button class="icon-btn" id="btn-settings-close">&times;</button>
+        </div>
+        <div class="settings-body">
+          <div class="form-field">
+            <label for="setting-college-name">College Name</label>
+            <input type="text" id="setting-college-name" placeholder="Your college name">
+          </div>
+          <div class="form-field">
+            <label for="setting-start-date">Semester Start Date</label>
+            <input type="date" id="setting-start-date">
+          </div>
+          <div class="form-field">
+            <label for="setting-end-date">Semester End Date</label>
+            <input type="date" id="setting-end-date">
+          </div>
+          <div class="form-field">
+            <label>Theme</label>
+            <div class="theme-options">
+              <button class="theme-btn active" data-theme="dark">Dark</button>
+              <button class="theme-btn" data-theme="light">Light</button>
+              <button class="theme-btn" data-theme="ocean">Ocean</button>
+              <button class="theme-btn" data-theme="sunset">Sunset</button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-footer">
+          <button class="btn-green" id="btn-save-settings">Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="hourglass.js"></script>
+  <script src="storage.js"></script>
+  <script src="tracker.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

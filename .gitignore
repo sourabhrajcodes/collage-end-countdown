@@ -1,0 +1,9 @@
+node_modules/
+data/
+dist/
+out/
+*.exe
+*.msi
+.DS_Store
+Thumbs.db
+.cache/
